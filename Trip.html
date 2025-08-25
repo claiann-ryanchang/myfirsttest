@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>台灣港口文化探索之旅 - 客製化行程</title>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom styles for timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            border-left: 2px solid #a78bfa; /* violet-400 */
+            margin-bottom: 24px; /* mb-6 */
+        }
+        .timeline-item:last-child {
+            border-left: none;
+            margin-bottom: 0;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px; /* Adjust to align with border */
+            top: 0;
+            width: 16px;
+            height: 16px;
+            background-color: #a78bfa; /* violet-400 */
+            border-radius: 50%;
+            border: 2px solid #8b5cf6; /* violet-500 */
+        }
+        /* Custom scrollbar for better UX */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a78bfa;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b5cf6;
+        }
+        /* Active navigation link styling */
+        .nav-link.active {
+            @apply border-b-2 border-violet-500 text-violet-600 font-semibold;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header and Navigation -->
+        <header class="bg-white shadow-md py-4 px-6 md:px-12 sticky top-0 z-50">
+            <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+                <h1 class="text-3xl font-bold text-violet-700 mb-4 md:mb-0">港口文化探索之旅</h1>
+                <nav class="flex flex-wrap justify-center md:justify-end space-x-4 md:space-x-8 text-lg">
+                    <a href="#" class="nav-link text-gray-600 hover:text-violet-600 transition-colors duration-200 py-2" data-section="overview">行程總覽</a>
+                    <a href="#" class="nav-link text-gray-600 hover:text-violet-600 transition-colors duration-200 py-2" data-section="transport-accommodation">交通住宿</a>
+                    <a href="#" class="nav-link text-gray-600 hover:text-violet-600 transition-colors duration-200 py-2" data-section="daily-itinerary">每日行程</a>
+                    <a href="#" class="nav-link text-gray-600 hover:text-violet-600 transition-colors duration-200 py-2" data-section="food-map">美食地圖</a>
+                    <a href="#" class="nav-link text-gray-600 hover:text-violet-600 transition-colors duration-200 py-2" data-section="pre-trip">行前準備</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-grow container mx-auto p-6 md:p-12">
+            <!-- 行程總覽 (Overview) Section -->
+            <section id="overview-section" class="mb-12 p-8 bg-white rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-violet-700 mb-6 border-b-2 border-violet-200 pb-3">行程總覽</h2>
+                <div class="grid md:grid-cols-2 gap-8 text-lg">
+                    <div>
+                        <p class="mb-2"><strong class="text-violet-600">目的地：</strong> 基隆、澎湖、高雄、台南、台中、苗栗、蘇澳</p>
+                        <p class="mb-2"><strong class="text-violet-600">出發地：</strong> 桃園機場 (TPE)</p>
+                        <p class="mb-2"><strong class="text-violet-600">旅遊天數：</strong> 8 天 7 夜</p>
+                        <p class="mb-2"><strong class="text-violet-600">旅遊日期：</strong> 2025/6/22 (日) ~ 2025/6/29 (日)</p>
+                    </div>
+                    <div>
+                        <p class="mb-2"><strong class="text-violet-600">行程風格：</strong> 緊湊、文化體驗為主</p>
+                        <p class="mb-2"><strong class="text-violet-600">必去景點：</strong> 各郵輪旅運中心 (基隆港、馬公港、高雄港、安平港、台中港、蘇澳港)</p>
+                        <p class="mb-2"><strong class="text-violet-600">必吃餐廳：</strong> 勝興客棧 (苗栗)</p>
+                        <p class="mb-2 text-red-600 font-semibold">
+                            <i class="fas fa-exclamation-triangle mr-2"></i> **溫馨提示：** 此行程涵蓋多地，交通時間較長，部分日期行程將非常緊湊，請做好心理準備。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 交通住宿 (Transportation & Accommodation) Section -->
+            <section id="transport-accommodation-section" class="hidden mb-12 p-8 bg-white rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-violet-700 mb-6 border-b-2 border-violet-200 pb-3">交通住宿</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">推薦交通方式</h3>
+                        <ul class="list-disc list-inside text-lg space-y-2">
+                            <li><strong class="text-gray-900">高鐵 (THSR)：</strong> 台灣西部長途移動首選，快速便捷，適合連接台中、台南、高雄等主要城市。</li>
+                            <li><strong class="text-gray-900">台鐵 (TRA)：</strong> 適合中短程移動及深入小鎮，如基隆至蘇澳、苗栗至台中，票價較實惠。</li>
+                            <li><strong class="text-gray-900">國內線航班：</strong> 往返澎湖的唯一選擇，建議提早預訂機票。</li>
+                            <li><strong class="text-gray-900">市區公車/捷運：</strong> 各大城市內部的主要交通工具。</li>
+                            <li><strong class="text-gray-900">計程車/叫車服務：</strong> 機場接駁或部分交通不便區域可利用，費用較高。</li>
+                        </ul>
+                        <div class="mt-8">
+                            <h3 class="text-2xl font-semibold text-violet-600 mb-4">交通時間與費用比較</h3>
+                            <div class="relative">
+                                <canvas id="transportChart"></canvas>
+                                <div id="chartTooltip" class="absolute bg-gray-800 text-white text-sm p-2 rounded shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none" style="display: none;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">推薦住宿</h3>
+                        <div class="space-y-6 text-lg">
+                            <div>
+                                <h4 class="font-bold text-violet-500 mb-1">Day 1 & Day 2: 基隆</h4>
+                                <p><strong>長榮桂冠酒店 基隆 (Evergreen Laurel Hotel Keelung)</strong></p>
+                                <p class="text-gray-600">基隆港旁，海景房視野佳，交通便利。 [<a href="https://www.google.com/maps/search/?api=1&query=長榮桂冠酒店基隆" target="_blank" class="text-blue-500 hover:underline">地圖</a>]</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-violet-500 mb-1">Day 2: 蘇澳</h4>
+                                <p><strong>煙波大飯店 蘇澳四季雙泉館 (Lakeshore Hotel Suao)</strong></p>
+                                <p class="text-gray-600">獨特冷熱雙泉設施，提供舒適放鬆的住宿體驗。 [<a href="https://www.google.com/maps/search/?api=1&query=煙波大飯店蘇澳四季雙泉館" target="_blank" class="text-blue-500 hover:underline">地圖</a>]</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-violet-500 mb-1">Day 3 & Day 4: 台中</h4>
+                                <p><strong>台中日月千禧酒店 (Millennium Hotel Taichung)</strong></p>
+                                <p class="text-gray-600">位於七期新市政中心，交通便利，設施完善。 [<a href="https://www.google.com/maps/search/?api=1&query=台中日月千禧酒店" target="_blank" class="text-blue-500 hover:underline">地圖</a>]</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-violet-500 mb-1">Day 5: 台南</h4>
+                                <p><strong>香格里拉台南遠東國際大飯店 (Shangri-La Far Eastern Plaza Hotel Tainan)</strong></p>
+                                <p class="text-gray-600">台南火車站共構，前往各景點極為方便。 [<a href="https://www.google.com/maps/search/?api=1&query=香格里拉台南遠東國際大飯店" target="_blank" class="text-blue-500 hover:underline">地圖</a>]</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-violet-500 mb-1">Day 6: 高雄</h4>
+                                <p><strong>高雄漢來大飯店 (Grand Hi-Lai Hotel Kaohsiung)</strong></p>
+                                <p class="text-gray-600">臨近愛河與駁二，部分房型可俯瞰高雄港景。 [<a href="https://www.google.com/maps/search/?api=1&query=高雄漢來大飯店" target="_blank" class="text-blue-500 hover:underline">地圖</a>]</p>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-violet-500 mb-1">Day 7: 澎湖</h4>
+                                <p><strong>澎湖福朋喜來登酒店 (Four Points by Sheraton Penghu)</strong></p>
+                                <p class="text-gray-600">澎湖唯一國際品牌酒店，近馬公港，設施齊全。 [<a href="https://www.google.com/maps/search/?api=1&query=澎湖福朋喜來登酒店" target="_blank" class="text-blue-500 hover:underline">地圖</a>]</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 每日行程 (Daily Itinerary) Section -->
+            <section id="daily-itinerary-section" class="hidden mb-12 p-8 bg-white rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-violet-700 mb-6 border-b-2 border-violet-200 pb-3">每日行程</h2>
+                <div id="itinerary-timeline" class="space-y-8">
+                    <!-- Day 1 -->
+                    <div class="timeline-day">
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">Day 1: 2025/6/22 (日) 抵達基隆，探訪海港文化</h3>
+                        <div class="space-y-6">
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">09:00 - 10:30 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">桃園機場 (TPE) 抵達</p>
+                                <p class="text-gray-700">準備搭乘交通工具前往基隆。</p>
+                                <p class="text-gray-600 mt-1">交通：桃園機場客運 (國光客運1813號) [預估時間：約 1-1.5 小時，費用：約 NT$130-150]</p>
+                                <a href="https://www.google.com/maps/dir/桃園國際機場/基隆市" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">10:30 - 12:00 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">基隆港西岸旅客中心 / 基隆港郵輪廣場</p>
+                                <p class="text-gray-700">感受北台灣最大港口的脈動，欣賞港灣風光。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=基隆港西岸旅客中心" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">12:00 - 13:30 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">午餐：基隆廟口夜市</p>
+                                <p class="text-gray-700">品嚐在地特色小吃，如鼎邊趖、營養三明治、天婦羅。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=基隆廟口夜市" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">13:30 - 17:00 (3.5小時)</p>
+                                <p class="font-bold text-gray-900">和平島公園 / 正濱漁港彩色屋</p>
+                                <p class="text-gray-700">欣賞獨特海蝕地形與繽紛的異國風情漁港。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=和平島公園" target="_blank" class="text-blue-500 hover:underline text-sm">和平島地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=正濱漁港彩色屋" target="_blank" class="text-blue-500 hover:underline text-sm">正濱漁港地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">17:00 - 18:00 (1小時)</p>
+                                <p class="font-bold text-gray-900">入住基隆飯店</p>
+                                <p class="text-gray-700">推薦：長榮桂冠酒店 基隆。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">18:00 - 20:00 (2小時)</p>
+                                <p class="font-bold text-gray-900">晚餐：基隆港區海產餐廳</p>
+                                <p class="text-gray-700">享用新鮮海產。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 2 -->
+                    <div class="timeline-day">
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">Day 2: 2025/6/23 (一) 基隆至蘇澳，漁港小鎮風情</h3>
+                        <div class="space-y-6">
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">09:00 - 10:00 (1小時)</p>
+                                <p class="font-bold text-gray-900">基隆周邊自由活動</p>
+                                <p class="text-gray-700">可逛逛周邊特色小店或享受飯店設施。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">10:00 - 12:00 (2小時)</p>
+                                <p class="font-bold text-gray-900">前往蘇澳</p>
+                                <p class="text-gray-600 mt-1">交通：基隆火車站搭乘台鐵至蘇澳新站 (需在七堵或八堵轉乘，或搭直達車)，再轉乘區間車或計程車至蘇澳市區。 [預估時間：約 1.5 - 2 小時，費用：約 NT$150-200]</p>
+                                <a href="https://www.google.com/maps/dir/基隆車站/蘇澳新站" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">12:00 - 13:30 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">午餐：蘇澳海鮮餐廳</p>
+                                <p class="text-gray-700">品嚐南方澳漁港新鮮海產。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=蘇澳海鮮餐廳" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">13:30 - 15:00 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">蘇澳港旅運中心 (南方澳漁港)</p>
+                                <p class="text-gray-700">參觀台灣重要的漁業港口，感受漁村文化。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=蘇澳港旅客服務中心" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">15:00 - 17:00 (2小時)</p>
+                                <p class="font-bold text-gray-900">蘇澳冷泉公園</p>
+                                <p class="text-gray-700">體驗世界唯二的碳酸氫鈣冷泉。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=蘇澳冷泉公園" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">17:00 - 18:00 (1小時)</p>
+                                <p class="font-bold text-gray-900">入住蘇澳飯店</p>
+                                <p class="text-gray-700">推薦：煙波大飯店 蘇澳四季雙泉館。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">18:00 - 19:30 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">晚餐：飯店或周邊特色餐廳</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 3 -->
+                    <div class="timeline-day">
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">Day 3: 2025/6/24 (二) 苗栗客家文化，轉進台中</h3>
+                        <div class="space-y-6">
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">09:00 - 12:00 (3小時)</p>
+                                <p class="font-bold text-gray-900">蘇澳至苗栗三義</p>
+                                <p class="text-gray-600 mt-1">交通：搭乘台鐵至羅東/宜蘭，轉乘客運或台鐵至台北車站，再轉乘高鐵至苗栗站 (約1.5小時)，從高鐵苗栗站搭計程車或接駁車至三義 (約30分鐘)。 [預估時間：約 3-4 小時，費用：約 NT$600-800]</p>
+                                <a href="https://www.google.com/maps/dir/蘇澳新站/苗栗高鐵站" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">12:00 - 13:30 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">午餐：勝興客棧 (必吃)</p>
+                                <p class="text-gray-700">品嚐道地客家美食，體驗客家文化。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=勝興客棧" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">13:30 - 15:30 (2小時)</p>
+                                <p class="font-bold text-gray-900">勝興車站 / 龍騰斷橋</p>
+                                <p class="text-gray-700">台灣舊山線著名景點，感受鐵道歷史與自然遺蹟之美。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=勝興車站" target="_blank" class="text-blue-500 hover:underline text-sm">勝興車站地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=龍騰斷橋" target="_blank" class="text-blue-500 hover:underline text-sm">龍騰斷橋地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">15:30 - 17:00 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">三義至台中</p>
+                                <p class="text-gray-600 mt-1">交通：從三義搭乘台鐵至台中火車站 (約 40 分鐘) 或從苗栗高鐵站搭乘高鐵至台中高鐵站 (約 10 分鐘)。 [預估時間：約 0.5 - 1.5 小時，費用：約 NT$70-150]</p>
+                                <a href="https://www.google.com/maps/dir/三義車站/台中車站" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃 (台鐵)</a><br>
+                                <a href="https://www.google.com/maps/dir/苗栗高鐵站/台中高鐵站" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃 (高鐵)</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">17:00 - 18:00 (1小時)</p>
+                                <p class="font-bold text-gray-900">入住台中飯店</p>
+                                <p class="text-gray-700">推薦：台中日月千禧酒店。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">18:00 - 20:00 (2小時)</p>
+                                <p class="font-bold text-gray-900">晚餐：逢甲夜市</p>
+                                <p class="text-gray-700">體驗台中最熱鬧的夜市文化，品嚐各式小吃。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=逢甲夜市" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 4 -->
+                    <div class="timeline-day">
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">Day 4: 2025/6/25 (三) 台中港與城市文化</h3>
+                        <div class="space-y-6">
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">09:30 - 11:30 (2小時)</p>
+                                <p class="font-bold text-gray-900">台中港旅客服務中心</p>
+                                <p class="text-gray-700">參觀台灣中部重要國際港口，了解其運作。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=台中港旅客服務中心" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">11:30 - 13:00 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">午餐：高美濕地周邊餐廳</p>
+                                <p class="text-gray-700">在前往濕地前享用午餐。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">13:00 - 15:30 (2.5小時)</p>
+                                <p class="font-bold text-gray-900">高美濕地</p>
+                                <p class="text-gray-700">欣賞台灣西海岸的濕地生態與木棧道美景 (注意漲退潮時間)。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=高美濕地" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">15:30 - 17:00 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">宮原眼科</p>
+                                <p class="text-gray-700">日式建築結合文創與美食，品嚐特色冰淇淋或點心。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=宮原眼科" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">17:00 - 18:00 (1小時)</p>
+                                <p class="font-bold text-gray-900">勤美誠品綠園道 / 范特喜文創聚落</p>
+                                <p class="text-gray-700">體驗台中獨特的文創氛圍。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=勤美誠品綠園道" target="_blank" class="text-blue-500 hover:underline text-sm">勤美地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=范特喜文創聚落" target="_blank" class="text-blue-500 hover:underline text-sm">范特喜地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">18:00 - 19:30 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">晚餐：台中特色餐廳</p>
+                                <p class="text-gray-700">可選擇精緻餐飲或特色小吃。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 5 -->
+                    <div class="timeline-day">
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">Day 5: 2025/6/26 (四) 前進台南，古都與安平港</h3>
+                        <div class="space-y-6">
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">09:00 - 10:00 (1小時)</p>
+                                <p class="font-bold text-gray-900">台中至台南</p>
+                                <p class="text-gray-600 mt-1">交通：台中高鐵站搭乘高鐵至台南站。 [預估時間：約 45-60 分鐘，費用：約 NT$450-550]</p>
+                                <a href="https://www.google.com/maps/dir/台中高鐵站/台南高鐵站" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">10:00 - 11:00 (1小時)</p>
+                                <p class="font-bold text-gray-900">入住台南飯店並放下行李</p>
+                                <p class="text-gray-700">推薦：香格里拉台南遠東國際大飯店。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">11:00 - 12:30 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">安平港旅客服務中心</p>
+                                <p class="text-gray-700">探訪具有歷史意義的安平港。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=安平港旅客服務中心" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">12:30 - 14:00 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">午餐：台南安平小吃</p>
+                                <p class="text-gray-700">品嚐蝦捲、棺材板、周氏蝦捲等。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">14:00 - 16:30 (2.5小時)</p>
+                                <p class="font-bold text-gray-900">安平古堡 / 安平樹屋</p>
+                                <p class="text-gray-700">深入了解台灣歷史與獨特共生景觀。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=安平古堡" target="_blank" class="text-blue-500 hover:underline text-sm">安平古堡地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=安平樹屋" target="_blank" class="text-blue-500 hover:underline text-sm">安平樹屋地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">16:30 - 18:00 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">赤崁樓 / 孔廟</p>
+                                <p class="text-gray-700">漫步古蹟，感受台南的文化底蘊。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=赤崁樓" target="_blank" class="text-blue-500 hover:underline text-sm">赤崁樓地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=台南孔廟" target="_blank" class="text-blue-500 hover:underline text-sm">孔廟地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">18:00 - 19:30 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">晚餐：台南小吃巡禮</p>
+                                <p class="text-gray-700">牛肉湯、擔仔麵、碗粿等。</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 6 -->
+                    <div class="timeline-day">
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">Day 6: 2025/6/27 (五) 南台灣門戶高雄，藝術與港灣</h3>
+                        <div class="space-y-6">
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">09:30 - 10:30 (1小時)</p>
+                                <p class="font-bold text-gray-900">台南至高雄</p>
+                                <p class="text-gray-600 mt-1">交通：台南車站搭乘台鐵至高雄車站。 [預估時間：約 30-45 分鐘，費用：約 NT$70-100]</p>
+                                <a href="https://www.google.com/maps/dir/台南車站/高雄車站" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">10:30 - 11:30 (1小時)</p>
+                                <p class="font-bold text-gray-900">入住高雄飯店並放下行李</p>
+                                <p class="text-gray-700">推薦：高雄漢來大飯店。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">11:30 - 13:00 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">高雄港旅運中心 / 駁二藝術特區</p>
+                                <p class="text-gray-700">參觀國際郵輪進出門戶，漫步文創園區。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=高雄港旅運中心" target="_blank" class="text-blue-500 hover:underline text-sm">旅運中心地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=駁二藝術特區" target="_blank" class="text-blue-500 hover:underline text-sm">駁二地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">13:00 - 14:30 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">午餐：鹽埕區美食</p>
+                                <p class="text-gray-700">在地小吃或特色餐館。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">14:30 - 16:30 (2小時)</p>
+                                <p class="font-bold text-gray-900">旗津半日遊</p>
+                                <p class="text-gray-700">搭乘渡輪前往旗津，租借自行車環島，參觀燈塔、星空隧道。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=旗津渡輪站" target="_blank" class="text-blue-500 hover:underline text-sm">旗津渡輪站地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">16:30 - 18:00 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">蓮池潭龍虎塔 / 春秋閣</p>
+                                <p class="text-gray-700">高雄經典地標，具有濃厚傳統色彩。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=蓮池潭龍虎塔" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">18:00 - 19:30 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">晚餐：六合夜市或瑞豐夜市</p>
+                                <p class="text-gray-700">體驗南台灣夜市文化。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=六合夜市" target="_blank" class="text-blue-500 hover:underline text-sm">六合夜市地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=瑞豐夜市" target="_blank" class="text-blue-500 hover:underline text-sm">瑞豐夜市地圖</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 7 -->
+                    <div class="timeline-day">
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">Day 7: 2025/6/28 (六) 飛往澎湖，菊島風光與馬公港</h3>
+                        <div class="space-y-6">
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">08:00 - 09:00 (1小時)</p>
+                                <p class="font-bold text-gray-900">高雄飯店至高雄小港機場 (KHH)</p>
+                                <p class="text-gray-600 mt-1">交通：捷運或計程車。 [預估時間：約 30-40 分鐘]</p>
+                                <a href="https://www.google.com/maps/dir/高雄漢來大飯店/高雄國際航空站" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">09:00 - 10:30 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">搭乘國內線班機前往澎湖馬公機場 (MZG)</p>
+                                <p class="text-gray-600 mt-1">交通：國內線航班。 [預估飛行時間：約 40-50 分鐘，費用：約 NT$1500-2000]</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">10:30 - 11:30 (1小時)</p>
+                                <p class="font-bold text-gray-900">馬公機場至澎湖飯店</p>
+                                <p class="text-gray-700">入住澎湖飯店並放下行李，推薦：澎湖福朋喜來登酒店。</p>
+                                <a href="https://www.google.com/maps/dir/馬公航空站/澎湖福朋喜來登酒店" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">11:30 - 13:00 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">午餐：馬公市區海鮮餐廳</p>
+                                <p class="text-gray-700">品嚐澎湖特色海產。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">13:00 - 14:30 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">馬公港旅運中心 / 澎湖生活博物館</p>
+                                <p class="text-gray-700">了解澎湖的海洋歷史與文化。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=馬公港旅運中心" target="_blank" class="text-blue-500 hover:underline text-sm">馬公港地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=澎湖生活博物館" target="_blank" class="text-blue-500 hover:underline text-sm">博物館地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">14:30 - 17:00 (2.5小時)</p>
+                                <p class="font-bold text-gray-900">天后宮 / 中央街 / 跨海大橋 / 漁翁島燈塔</p>
+                                <p class="text-gray-700">澎湖文化古蹟與自然風光，可租機車或包車遊覽。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=澎湖天后宮" target="_blank" class="text-blue-500 hover:underline text-sm">天后宮地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=澎湖中央街" target="_blank" class="text-blue-500 hover:underline text-sm">中央街地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=澎湖跨海大橋" target="_blank" class="text-blue-500 hover:underline text-sm">跨海大橋地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=漁翁島燈塔" target="_blank" class="text-blue-500 hover:underline text-sm">漁翁島燈塔地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">17:00 - 19:30 (2.5小時)</p>
+                                <p class="font-bold text-gray-900">晚餐：觀音亭海鮮燒烤或市區餐廳</p>
+                                <p class="text-gray-700">欣賞夕陽，品嚐美食。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=澎湖觀音亭" target="_blank" class="text-blue-500 hover:underline text-sm">觀音亭地圖</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Day 8 -->
+                    <div class="timeline-day">
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">Day 8: 2025/6/29 (日) 澎湖巡禮，賦歸桃園</h3>
+                        <div class="space-y-6">
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">09:00 - 11:30 (2.5小時)</p>
+                                <p class="font-bold text-gray-900">澎湖自由活動 / 伴手禮採購</p>
+                                <p class="text-gray-700">可前往篤行十村、風櫃洞，或購買黑糖糕、干貝醬等伴手禮。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=澎湖篤行十村" target="_blank" class="text-blue-500 hover:underline text-sm">篤行十村地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=澎湖風櫃洞" target="_blank" class="text-blue-500 hover:underline text-sm">風櫃洞地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">11:30 - 13:00 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">午餐：澎湖小吃</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">13:00 - 14:00 (1小時)</p>
+                                <p class="font-bold text-gray-900">澎湖飯店至馬公機場 (MZG)</p>
+                                <p class="text-gray-600 mt-1">交通：計程車或飯店接駁。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">14:00 - 16:00 (2小時)</p>
+                                <p class="font-bold text-gray-900">搭乘國內線班機返回桃園機場 (TPE)</p>
+                                <p class="text-gray-600 mt-1">交通：國內線航班 (MZG -> TPE 或 MZG -> KHH/TSA 再轉乘高鐵/客運至TPE)。 [預估飛行時間：約 1 小時，費用：約 NT$2000-2500]</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">16:00 (預估)</p>
+                                <p class="font-bold text-gray-900">桃園機場 (TPE) 辦理登機，準備返程</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 美食地圖 (Food Map) Section -->
+            <section id="food-map-section" class="hidden mb-12 p-8 bg-white rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-violet-700 mb-6 border-b-2 border-violet-200 pb-3">美食地圖</h2>
+                <div class="mb-6 flex flex-wrap gap-3">
+                    <button class="filter-btn bg-violet-500 text-white px-4 py-2 rounded-full hover:bg-violet-600 transition-colors duration-200" data-filter="all">所有美食</button>
+                    <button class="filter-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-violet-200 transition-colors duration-200" data-filter="客家">客家</button>
+                    <button class="filter-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-violet-200 transition-colors duration-200" data-filter="海鮮">海鮮</button>
+                    <button class="filter-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-violet-200 transition-colors duration-200" data-filter="小吃">小吃</button>
+                    <button class="filter-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-violet-200 transition-colors duration-200" data-filter="甜點">甜點</button>
+                </div>
+
+                <div id="restaurant-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Restaurants will be injected here by JavaScript -->
+                </div>
+            </section>
+
+            <!-- 行前準備 (Pre-Trip Preparation) Section -->
+            <section id="pre-trip-section" class="hidden mb-12 p-8 bg-white rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-violet-700 mb-6 border-b-2 border-violet-200 pb-3">行前準備</h2>
+                <ul class="list-disc list-inside text-lg space-y-4">
+                    <li><strong class="text-violet-600">交通預訂：</strong> 高鐵、台鐵、國內線機票（尤其是澎湖航班）建議提早預訂，特別是假日或旺季。</li>
+                    <li><strong class="text-violet-600">住宿預訂：</strong> 熱門城市的飯店與民宿建議提前預訂，確保行程順暢。</li>
+                    <li><strong class="text-violet-600">天氣與衣物：</strong> 6月底台灣氣候炎熱潮濕，需準備輕便透氣衣物、防曬用品、遮陽帽、雨具。澎湖日曬強烈，務必加強防曬。</li>
+                    <li><strong class="text-violet-600">行動網路：</strong> 購買台灣當地 SIM 卡或租借 Wi-Fi 分享器，保持通訊暢通。</li>
+                    <li><strong class="text-violet-600">舒適鞋履：</strong> 行程緊湊且多步行，請準備舒適的運動鞋。</li>
+                    <li><strong class="text-violet-600">個人藥品：</strong> 準備常用藥品，如腸胃藥、止痛藥、暈車藥等。</li>
+                    <li><strong class="text-violet-600">電子支付/現金：</strong> 台灣行動支付逐漸普及，但部分小店或夜市仍以現金為主，建議備妥現金。</li>
+                    <li><strong class="text-violet-600">環保意識：</strong> 響應環保，自備環保杯、環保餐具、購物袋。</li>
+                    <li><strong class="text-violet-600">Google Maps：</strong> 善用 Google Maps 導航及查詢交通資訊，所有行程中的地點都附有連結。</li>
+                </ul>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-violet-700 text-white py-6 px-6 md:px-12 mt-auto">
+            <div class="container mx-auto text-center text-sm">
+                &copy; 2025 您的專屬旅遊規劃師與前端網頁設計師。保留所有權利。
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Data for the SPA
+        const sections = [
+            { id: 'overview', name: '行程總覽' },
+            { id: 'transport-accommodation', name: '交通住宿' },
+            { id: 'daily-itinerary', name: '每日行程' },
+            { id: 'food-map', name: '美食地圖' },
+            { id: 'pre-trip', name: '行前準備' }
+        ];
+
+        const restaurants = [
+            { name: '勝興客棧', location: '苗栗三義', category: '客家', googleMaps: 'https://www.google.com/maps/search/?api=1&query=勝興客棧' },
+            { name: '基隆廟口夜市', location: '基隆', category: '小吃', googleMaps: 'https://www.google.com/maps/search/?api=1&query=基隆廟口夜市' },
+            { name: '南方澳海產', location: '蘇澳', category: '海鮮', googleMaps: 'https://www.google.com/maps/search/?api=1&query=南方澳海產餐廳' },
+            { name: '宮原眼科', location: '台中', category: '甜點', googleMaps: 'https://www.google.com/maps/search/?api=1&query=宮原眼科' },
+            { name: '逢甲夜市', location: '台中', category: '小吃', googleMaps: 'https://www.google.com/maps/search/?api=1&query=逢甲夜市' },
+            { name: '周氏蝦捲', location: '台南安平', category: '小吃', googleMaps: 'https://www.google.com/maps/search/?api=1&query=周氏蝦捲' },
+            { name: '台南牛肉湯', location: '台南', category: '小吃', googleMaps: 'https://www.google.com/maps/search/?api=1&query=台南牛肉湯' },
+            { name: '六合夜市', location: '高雄', category: '小吃', googleMaps: 'https://www.google.com/maps/search/?api=1&query=六合夜市' },
+            { name: '澎湖海鮮餐廳', location: '澎湖馬公', category: '海鮮', googleMaps: 'https://www.google.com/maps/search/?api=1&query=澎湖海鮮餐廳' },
+            { name: '玉冠嫩仙草', location: '澎湖馬公', category: '甜點', googleMaps: 'https://www.google.com/maps/search/?api=1&query=玉冠嫩仙草' }
+        ];
+
+        // --- Navigation Logic ---
+        function showSection(sectionId) {
+            document.querySelectorAll('section[id$="-section"]').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId + '-section').classList.remove('hidden');
+
+            // Update active state for nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                link.classList.remove('border-b-2', 'border-violet-500', 'text-violet-600', 'font-semibold');
+                link.classList.add('text-gray-600');
+            });
+            const activeLink = document.querySelector(`.nav-link[data-section="${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+                activeLink.classList.add('border-b-2', 'border-violet-500', 'text-violet-600', 'font-semibold');
+                activeLink.classList.remove('text-gray-600');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('nav a.nav-link').forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const targetSection = event.target.getAttribute('data-section');
+                    showSection(targetSection);
+                });
+            });
+            // Show default section on load
+            showSection('overview');
+
+            // Initialize Food Map
+            renderRestaurants('all');
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const filter = event.target.dataset.filter;
+                    renderRestaurants(filter);
+                    // Update button active state
+                    document.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.classList.remove('bg-violet-500', 'text-white');
+                        btn.classList.add('bg-gray-200', 'text-gray-800');
+                    });
+                    event.target.classList.remove('bg-gray-200', 'text-gray-800');
+                    event.target.classList.add('bg-violet-500', 'text-white');
+                });
+            });
+
+            // Initialize Chart.js
+            initTransportChart();
+        });
+
+        // --- Food Map Logic ---
+        function renderRestaurants(filter) {
+            const restaurantListDiv = document.getElementById('restaurant-list');
+            restaurantListDiv.innerHTML = ''; // Clear previous listings
+
+            const filteredRestaurants = filter === 'all' ? restaurants : restaurants.filter(r => r.category === filter);
+
+            if (filteredRestaurants.length === 0) {
+                restaurantListDiv.innerHTML = '<p class="col-span-full text-center text-gray-600">無符合條件的餐廳。</p>';
+                return;
+            }
+
+            filteredRestaurants.forEach(restaurant => {
+                const restaurantCard = `
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-100 flex flex-col">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">${restaurant.name}</h3>
+                        <p class="text-gray-700 mb-1"><strong>地點：</strong> ${restaurant.location}</p>
+                        <p class="text-gray-700 mb-3"><strong>分類：</strong> ${restaurant.category}</p>
+                        <a href="${restaurant.googleMaps}" target="_blank" class="mt-auto inline-flex items-center text-violet-600 hover:text-violet-800 transition-colors duration-200 font-medium">
+                            在地圖上查看
+                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </a>
+                    </div>
+                `;
+                restaurantListDiv.innerHTML += restaurantCard;
+            });
+        }
+
+        // --- Chart.js Logic for Transportation Comparison ---
+        function initTransportChart() {
+            const ctx = document.getElementById('transportChart').getContext('2d');
+            const chartTooltip = document.getElementById('chartTooltip');
+
+            const transportData = {
+                labels: ['桃園機場-基隆', '台中-台南', '台南-高雄', '高雄-澎湖'],
+                datasets: [
+                    {
+                        label: '預估時間 (小時)',
+                        data: [1.2, 0.8, 0.5, 0.7], // Simplified average times
+                        backgroundColor: 'rgba(139, 92, 246, 0.6)', // violet-500
+                        borderColor: 'rgba(139, 92, 246, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y-time',
+                    },
+                    {
+                        label: '預估費用 (NTD)',
+                        data: [140, 500, 90, 1750], // Simplified average costs
+                        backgroundColor: 'rgba(167, 139, 250, 0.6)', // violet-400
+                        borderColor: 'rgba(167, 139, 250, 1)',
+                        borderWidth: 1,
+                        yAxisID: 'y-cost',
+                    }
+                ]
+            };
+
+            const transportChart = new Chart(ctx, {
+                type: 'bar',
+                data: transportData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'x', // Make bars vertical
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '主要交通路線預估時間與費用比較',
+                            font: { size: 18, weight: 'bold' },
+                            color: '#4c1d95' // violet-800
+                        },
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { size: 14 },
+                                color: '#374151' // gray-700
+                            }
+                        },
+                        tooltip: {
+                            enabled: false, // Disable default tooltip
+                            position: 'nearest',
+                            external: function(context) {
+                                let tooltipModel = context.tooltip;
+                                if (tooltipModel.opacity === 0) {
+                                    chartTooltip.style.display = 'none';
+                                    return;
+                                }
+
+                                const dataPoints = tooltipModel.dataPoints;
+                                if (dataPoints && dataPoints.length > 0) {
+                                    let innerHtml = `
+                                        <div class="font-bold text-base mb-1">${tooltipModel.title[0]}</div>
+                                        <div>時間：<span class="font-semibold">${dataPoints[0].formattedValue} 小時</span></div>
+                                        <div>費用：<span class="font-semibold">${dataPoints[1].formattedValue} NTD</span></div>
+                                    `;
+                                    chartTooltip.innerHTML = innerHtml;
+
+                                    const position = context.chart.canvas.getBoundingClientRect();
+                                    chartTooltip.style.display = 'block';
+                                    chartTooltip.style.left = (position.left + window.scrollX + tooltipModel.caretX) + 'px';
+                                    chartTooltip.style.top = (position.top + window.scrollY + tooltipModel.caretY - chartTooltip.offsetHeight - 10) + 'px'; // Adjusted to be above
+                                    chartTooltip.style.opacity = 1;
+                                } else {
+                                    chartTooltip.style.display = 'none';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        'y-time': {
+                            type: 'linear',
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: '時間 (小時)',
+                                font: { size: 14, weight: 'bold' },
+                                color: '#6d28d9' // violet-700
+                            },
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        },
+                        'y-cost': {
+                            type: 'linear',
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: '費用 (NTD)',
+                                font: { size: 14, weight: 'bold' },
+                                color: '#6d28d9' // violet-700
+                            },
+                            ticks: {
+                                beginAtZero: true
+                            },
+                            grid: {
+                                drawOnChartArea: false // Only draw grid lines for the left Y axis
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: '主要路線',
+                                font: { size: 14, weight: 'bold' },
+                                color: '#6d28d9'
+                            },
+                            ticks: {
+                                font: { size: 12 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
