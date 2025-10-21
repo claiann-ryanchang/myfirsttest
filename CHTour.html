@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>彰化文化風景一日遊 - 客製化行程</title>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom styles for timeline */
+        .timeline-item {
+            position: relative;
+            padding-left: 30px;
+            border-left: 2px solid #a78bfa; /* violet-400 */
+            margin-bottom: 24px; /* mb-6 */
+        }
+        .timeline-item:last-child {
+            border-left: none;
+            margin-bottom: 0;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -8px; /* Adjust to align with border */
+            top: 0;
+            width: 16px;
+            height: 16px;
+            background-color: #a78bfa; /* violet-400 */
+            border-radius: 50%;
+            border: 2px solid #8b5cf6; /* violet-500 */
+        }
+        /* Custom scrollbar for better UX */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a78bfa;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b5cf6;
+        }
+        /* Active navigation link styling */
+        .nav-link.active {
+            @apply border-b-2 border-violet-500 text-violet-600 font-semibold;
+        }
+        /* Active route button styling */
+        .route-btn.active {
+            @apply bg-violet-600 text-white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header and Navigation -->
+        <header class="bg-white shadow-md py-4 px-6 md:px-12 sticky top-0 z-50">
+            <div class="container mx-auto flex flex-col md:flex-row justify-between items-center">
+                <h1 class="text-3xl font-bold text-violet-700 mb-4 md:mb-0">彰化文化風景一日遊</h1>
+                <nav class="flex flex-wrap justify-center md:justify-end space-x-4 md:space-x-8 text-lg">
+                    <a href="#" class="nav-link text-gray-600 hover:text-violet-600 transition-colors duration-200 py-2" data-section="overview">行程總覽</a>
+                    <a href="#" class="nav-link text-gray-600 hover:text-violet-600 transition-colors duration-200 py-2" data-section="transport-accommodation">交通資訊</a>
+                    <a href="#" class="nav-link text-gray-600 hover:text-violet-600 transition-colors duration-200 py-2" data-section="daily-itinerary">行程建議</a>
+                    <a href="#" class="nav-link text-gray-600 hover:text-violet-600 transition-colors duration-200 py-2" data-section="food-map">美食地圖</a>
+                    <a href="#" class="nav-link text-gray-600 hover:text-violet-600 transition-colors duration-200 py-2" data-section="pre-trip">行前準備</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content Area -->
+        <main class="flex-grow container mx-auto p-6 md:p-12">
+            <!-- 行程總覽 (Overview) Section -->
+            <section id="overview-section" class="mb-12 p-8 bg-white rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-violet-700 mb-6 border-b-2 border-violet-200 pb-3">行程總覽</h2>
+                <div class="grid md:grid-cols-2 gap-8 text-lg">
+                    <div>
+                        <p class="mb-2"><strong class="text-violet-600">目的地：</strong> 彰化縣</p>
+                        <p class="mb-2"><strong class="text-violet-600">出發地：</strong> 台中清水鎮</p>
+                        <p class="mb-2"><strong class="text-violet-600">旅遊天數：</strong> 1 天</p>
+                        <p class="mb-2"><strong class="text-violet-600">旅遊日期：</strong> 未定 (建議避開假日，人潮較少，體驗更佳)</p>
+                    </div>
+                    <div>
+                        <p class="mb-2"><strong class="text-violet-600">交通方式：</strong> 遊覽車</p>
+                        <p class="mb-2"><strong class="text-violet-600">住宿資訊：</strong> 不須住宿</p>
+                        <p class="mb-2"><strong class="text-violet-600">行程風格：</strong> 文化體驗、風景宜人、避免購物、適合中高齡</p>
+                        <p class="mb-2 text-green-600 font-semibold">
+                            <i class="fas fa-info-circle mr-2"></i> **行程特色：** 本行程專為中高齡朋友設計，強調輕鬆的文化與自然體驗，步調適中。
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 交通住宿 (Transportation & Accommodation) Section -->
+            <section id="transport-accommodation-section" class="hidden mb-12 p-8 bg-white rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-violet-700 mb-6 border-b-2 border-violet-200 pb-3">交通資訊</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">遊覽車旅遊優勢</h3>
+                        <ul class="list-disc list-inside text-lg space-y-2">
+                            <li><strong class="text-gray-900">舒適便捷：</strong> 無需自行駕車，團體行動，專人接送，減少交通壓力。</li>
+                            <li><strong class="text-gray-900">省時省力：</strong> 專注於景點遊覽，免去尋找停車位、規劃路線的煩惱。</li>
+                            <li><strong class="text-gray-900">專業導覽：</strong> 通常會配備導遊，提供豐富的在地知識與故事。</li>
+                            <li><strong class="text-gray-900">適合團體：</strong> 中高齡朋友一同出遊，相互照應，增添樂趣。</li>
+                        </ul>
+                        <p class="mt-4 text-gray-700">
+                            **費用考量：** 遊覽車費用依車型、天數及團體人數而異。通常平均分攤後，每人費用會比自行駕車 (油資、過路費、停車費) 更為經濟實惠且省心。
+                        </p>
+                    </div>
+                    <div class="mt-8 md:mt-0">
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">各路線預估總交通時間 (遊覽車)</h3>
+                        <div class="relative">
+                            <canvas id="transportChart"></canvas>
+                            <div id="chartTooltip" class="absolute bg-gray-800 text-white text-sm p-2 rounded shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 每日行程 (Daily Itinerary) Section -->
+            <section id="daily-itinerary-section" class="hidden mb-12 p-8 bg-white rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-violet-700 mb-6 border-b-2 border-violet-200 pb-3">行程建議</h2>
+                <div class="mb-6 flex flex-wrap gap-3">
+                    <button class="route-btn bg-violet-500 text-white px-5 py-2 rounded-full hover:bg-violet-600 transition-colors duration-200 active" data-route="route1">路線一：鹿港古鎮風華</button>
+                    <button class="route-btn bg-gray-200 text-gray-800 px-5 py-2 rounded-full hover:bg-violet-200 transition-colors duration-200" data-route="route2">路線二：八卦山與花卉綠意</button>
+                    <button class="route-btn bg-gray-200 text-gray-800 px-5 py-2 rounded-full hover:bg-violet-200 transition-colors duration-200" data-route="route3">路線三：彰化市區古蹟與鄉村悠遊</button>
+                </div>
+
+                <div id="itinerary-timeline" class="space-y-8">
+                    <!-- Route 1 Content -->
+                    <div id="route1-content" class="timeline-day">
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">路線一：鹿港古鎮風華</h3>
+                        <p class="text-gray-700 mb-6">深入體驗台灣經典鹿港小鎮的歷史建築與傳統工藝文化。</p>
+                        <div class="space-y-6">
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">08:30 - 09:00 (0.5小時)</p>
+                                <p class="font-bold text-gray-900">台中清水鎮 出發</p>
+                                <p class="text-gray-700">遊覽車集合，準備前往彰化。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">09:00 - 09:40 (0.7小時)</p>
+                                <p class="font-bold text-gray-900">交通：清水至鹿港</p>
+                                <p class="text-gray-600 mt-1">遊覽車。預估時間：約 40 分鐘。</p>
+                                <a href="https://www.google.com/maps/dir/台中市清水區/鹿港天后宮" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">09:40 - 11:10 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">鹿港天后宮 / 鹿港老街</p>
+                                <p class="text-gray-700">參拜香火鼎盛的天后宮，感受其莊嚴氛圍。隨後漫步於充滿懷舊風情的老街，欣賞古蹟建築與傳統店舖。建議停留時間：1.5 小時。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=鹿港天后宮" target="_blank" class="text-blue-500 hover:underline text-sm">天后宮地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=鹿港老街" target="_blank" class="text-blue-500 hover:underline text-sm">老街地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">11:10 - 12:30 (1.3小時)</p>
+                                <p class="font-bold text-gray-900">午餐：鹿港小吃</p>
+                                <p class="text-gray-700">在鹿港品嚐道地美食，如麵線糊、蝦猴酥、芋丸、肉包等。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=鹿港小吃" target="_blank" class="text-blue-500 hover:underline text-sm">搜尋鹿港小吃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">12:30 - 14:00 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">鹿港龍山寺 / 摸乳巷</p>
+                                <p class="text-gray-700">參觀被譽為台灣建築藝術瑰寶的龍山寺。接著體驗狹窄有趣的摸乳巷，感受古鎮的獨特魅力。建議停留時間：1.5 小時。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=鹿港龍山寺" target="_blank" class="text-blue-500 hover:underline text-sm">龍山寺地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=鹿港摸乳巷" target="_blank" class="text-blue-500 hover:underline text-sm">摸乳巷地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">14:00 - 15:30 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">桂花巷藝術村 / 傳統工藝體驗 (彈性)</p>
+                                <p class="text-gray-700">欣賞鹿港傳統建築之美，可選擇參與傳統工藝如捏麵人、春聯拓印等體驗活動，或在文創小店閒逛。建議停留時間：1.5 小時。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=桂花巷藝術村" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">15:30 - 16:30 (1小時)</p>
+                                <p class="font-bold text-gray-900">點心時間 / 自由活動</p>
+                                <p class="text-gray-700">可在鹿港品嚐特色糕點或咖啡，為旅程畫上句點前的悠閒時光。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">16:30 - 17:10 (0.7小時)</p>
+                                <p class="font-bold text-gray-900">交通：鹿港返回清水</p>
+                                <p class="text-gray-600 mt-1">遊覽車。預估時間：約 40 分鐘。</p>
+                                <a href="https://www.google.com/maps/dir/鹿港/台中市清水區" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">17:10 (預估)</p>
+                                <p class="font-bold text-gray-900">抵達台中清水鎮，行程結束</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Route 2 Content (hidden by default) -->
+                    <div id="route2-content" class="timeline-day hidden">
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">路線二：八卦山與花卉綠意</h3>
+                        <p class="text-gray-700 mb-6">欣賞彰化地標大佛，漫步於廣闊的花卉園區，享受自然與藝術的結合。</p>
+                        <div class="space-y-6">
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">08:30 - 09:00 (0.5小時)</p>
+                                <p class="font-bold text-gray-900">台中清水鎮 出發</p>
+                                <p class="text-gray-700">遊覽車集合，準備前往彰化。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">09:00 - 09:50 (0.8小時)</p>
+                                <p class="font-bold text-gray-900">交通：清水至八卦山</p>
+                                <p class="text-gray-600 mt-1">遊覽車。預估時間：約 50 分鐘。</p>
+                                <a href="https://www.google.com/maps/dir/台中市清水區/八卦山大佛風景區" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">09:50 - 11:50 (2小時)</p>
+                                <p class="font-bold text-gray-900">八卦山大佛風景區</p>
+                                <p class="text-gray-700">參訪彰化地標大佛，登高望遠，俯瞰彰化平原風光。可沿著天空步道漫步，體驗不同的視野。建議停留時間：2 小時。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=八卦山大佛風景區" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">11:50 - 13:20 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">午餐：彰化市區美食</p>
+                                <p class="text-gray-700">品嚐彰化肉圓、貓鼠麵等在地小吃。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=彰化小吃" target="_blank" class="text-blue-500 hover:underline text-sm">搜尋彰化小吃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">13:20 - 14:00 (0.7小時)</p>
+                                <p class="font-bold text-gray-900">交通：彰化市區至田尾</p>
+                                <p class="text-gray-600 mt-1">遊覽車。預估時間：約 40 分鐘。</p>
+                                <a href="https://www.google.com/maps/dir/彰化火車站/田尾公路花園" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">14:00 - 16:30 (2.5小時)</p>
+                                <p class="font-bold text-gray-900">田尾公路花園</p>
+                                <p class="text-gray-700">搭乘園區內的電動接駁車 (或租借協力車/四人座腳踏車)，輕鬆遊覽廣闊的花卉園區，欣賞各式花卉植物與園藝造景。建議停留時間：2.5 小時。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=田尾公路花園" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">16:30 - 17:30 (1小時)</p>
+                                <p class="font-bold text-gray-900">交通：田尾返回清水</p>
+                                <p class="text-gray-600 mt-1">遊覽車。預估時間：約 1 小時。</p>
+                                <a href="https://www.google.com/maps/dir/田尾公路花園/台中市清水區" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">17:30 (預估)</p>
+                                <p class="font-bold text-gray-900">抵達台中清水鎮，行程結束</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Route 3 Content (hidden by default) -->
+                    <div id="route3-content" class="timeline-day hidden">
+                        <h3 class="text-2xl font-semibold text-violet-600 mb-4">路線三：彰化市區古蹟與鄉村悠遊</h3>
+                        <p class="text-gray-700 mb-6">探訪彰化市區的古蹟，再前往廣闊的鄉村公園，享受悠閒時光。</p>
+                        <div class="space-y-6">
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">08:30 - 09:00 (0.5小時)</p>
+                                <p class="font-bold text-gray-900">台中清水鎮 出發</p>
+                                <p class="text-gray-700">遊覽車集合，準備前往彰化。</p>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">09:00 - 09:40 (0.7小時)</p>
+                                <p class="font-bold text-gray-900">交通：清水至彰化市區</p>
+                                <p class="text-gray-600 mt-1">遊覽車。預估時間：約 40 分鐘。</p>
+                                <a href="https://www.google.com/maps/dir/台中市清水區/彰化孔子廟" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">09:40 - 11:10 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">彰化孔子廟 / 彰化藝術館</p>
+                                <p class="text-gray-700">參觀彰化縣定古蹟孔子廟，感受儒家文化氣息。可順道參觀彰化藝術館，欣賞藝文展覽。建議停留時間：1.5 小時。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=彰化孔子廟" target="_blank" class="text-blue-500 hover:underline text-sm">孔子廟地圖</a><br>
+                                <a href="https://www.google.com/maps/search/?api=1&query=彰化藝術館" target="_blank" class="text-blue-500 hover:underline text-sm">藝術館地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">11:10 - 12:40 (1.5小時)</p>
+                                <p class="font-bold text-gray-900">午餐：彰化市區在地美食</p>
+                                <p class="text-gray-700">品嚐彰化特有的爌肉飯、肉羹等風味小吃。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=彰化爌肉飯" target="_blank" class="text-blue-500 hover:underline text-sm">搜尋彰化爌肉飯</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">12:40 - 13:20 (0.7小時)</p>
+                                <p class="font-bold text-gray-900">交通：彰化市區至溪州公園</p>
+                                <p class="text-gray-600 mt-1">遊覽車。預估時間：約 40 分鐘。</p>
+                                <a href="https://www.google.com/maps/dir/彰化火車站/溪州公園" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">13:20 - 16:00 (2.7小時)</p>
+                                <p class="font-bold text-gray-900">溪州公園 (費茲洛公園)</p>
+                                <p class="text-gray-700">佔地廣闊的公園，有綠地、生態池、步道等，適合輕鬆散步、享受大自然。公園內有許多休憩設施。建議停留時間：2.5 - 3 小時。</p>
+                                <a href="https://www.google.com/maps/search/?api=1&query=溪州公園" target="_blank" class="text-blue-500 hover:underline text-sm">地圖</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">16:00 - 17:00 (1小時)</p>
+                                <p class="font-bold text-gray-900">交通：溪州公園返回清水</p>
+                                <p class="text-gray-600 mt-1">遊覽車。預估時間：約 1 小時。</p>
+                                <a href="https://www.google.com/maps/dir/溪州公園/台中市清水區" target="_blank" class="text-blue-500 hover:underline text-sm">路線規劃</a>
+                            </div>
+                            <div class="timeline-item">
+                                <p class="text-sm text-gray-500">17:00 (預估)</p>
+                                <p class="font-bold text-gray-900">抵達台中清水鎮，行程結束</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 美食地圖 (Food Map) Section -->
+            <section id="food-map-section" class="hidden mb-12 p-8 bg-white rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-violet-700 mb-6 border-b-2 border-violet-200 pb-3">美食地圖</h2>
+                <div class="mb-6 flex flex-wrap gap-3">
+                    <button class="filter-btn bg-violet-500 text-white px-4 py-2 rounded-full hover:bg-violet-600 transition-colors duration-200" data-filter="all">所有美食</button>
+                    <button class="filter-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-violet-200 transition-colors duration-200" data-filter="小吃">小吃</button>
+                    <button class="filter-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-violet-200 transition-colors duration-200" data-filter="麵食">麵食</button>
+                    <button class="filter-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-full hover:bg-violet-200 transition-colors duration-200" data-filter="傳統糕點">傳統糕點</button>
+                </div>
+
+                <div id="restaurant-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Restaurants will be injected here by JavaScript -->
+                </div>
+            </section>
+
+            <!-- 行前準備 (Pre-Trip Preparation) Section -->
+            <section id="pre-trip-section" class="hidden mb-12 p-8 bg-white rounded-lg shadow-lg">
+                <h2 class="text-3xl font-bold text-violet-700 mb-6 border-b-2 border-violet-200 pb-3">行前準備</h2>
+                <ul class="list-disc list-inside text-lg space-y-4">
+                    <li><strong class="text-violet-600">舒適鞋履：</strong> 行程會有步行，請務必穿著舒適、防滑的鞋子。</li>
+                    <li><strong class="text-violet-600">輕便衣物：</strong> 依天氣預報穿著透氣輕便的衣物，建議攜帶薄外套以應對車內外溫差或天氣變化。</li>
+                    <li><strong class="text-violet-600">防曬用品：</strong> 遮陽帽、太陽眼鏡、防曬乳是戶外活動的必備品。</li>
+                    <li><strong class="text-violet-600">飲水與點心：</strong> 隨身攜帶水瓶，保持水分充足。可準備少量點心補充體力。</li>
+                    <li><strong class="text-violet-600">個人藥品：</strong> 若有慢性疾病或特殊需求，請務必攜帶個人常備藥品。</li>
+                    <li><strong class="text-violet-600">雨具：</strong> 台灣天氣多變，建議攜帶輕便雨具 (如摺疊傘或輕便雨衣)。</li>
+                    <li><strong class="text-violet-600">隨身小包：</strong> 貴重物品隨身攜帶，方便拿取。</li>
+                    <li><strong class="text-violet-600">行動電源：</strong> 確保手機電量充足，方便拍照與導航。</li>
+                    <li><strong class="text-violet-600">保持愉悅心情：</strong> 團體出遊，互相照應，享受美好的旅程！</li>
+                </ul>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-violet-700 text-white py-6 px-6 md:px-12 mt-auto">
+            <div class="container mx-auto text-center text-sm">
+                &copy; 2025 您的專屬旅遊規劃師與前端網頁設計師。保留所有權利。
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Data for the SPA
+        const sections = [
+            { id: 'overview', name: '行程總覽' },
+            { id: 'transport-accommodation', name: '交通資訊' },
+            { id: 'daily-itinerary', name: '行程建議' },
+            { id: 'food-map', name: '美食地圖' },
+            { id: 'pre-trip', name: '行前準備' }
+        ];
+
+        const restaurants = [
+            { name: '阿璋肉圓', location: '彰化市', category: '小吃', googleMaps: 'https://www.google.com/maps/search/?api=1&query=阿璋肉圓' },
+            { name: '貓鼠麵', location: '彰化市', category: '麵食', googleMaps: 'https://www.google.com/maps/search/?api=1&query=貓鼠麵' },
+            { name: '爌肉飯 (例如：泉焢肉飯)', location: '彰化市', category: '小吃', googleMaps: 'https://www.google.com/maps/search/?api=1&query=泉焢肉飯' },
+            { name: '老龍師肉包', location: '鹿港', category: '小吃', googleMaps: 'https://www.google.com/maps/search/?api=1&query=老龍師肉包' },
+            { name: '阿振肉包', location: '鹿港', category: '小吃', googleMaps: 'https://www.google.com/maps/search/?api=1&query=阿振肉包' },
+            { name: '王罔麵線糊', location: '鹿港', category: '麵食', googleMaps: 'https://www.google.com/maps/search/?api=1&query=王罔麵線糊' },
+            { name: '鹿港蝦猴酥', location: '鹿港', category: '小吃', googleMaps: 'https://www.google.com/maps/search/?api=1&query=鹿港蝦猴酥' },
+            { name: '鹿港芋丸', location: '鹿港', category: '小吃', googleMaps: 'https://www.google.com/maps/search/?api=1&query=鹿港芋丸' },
+            { name: '玉珍齋', location: '鹿港', category: '傳統糕點', googleMaps: 'https://www.google.com/maps/search/?api=1&query=玉珍齋' },
+            { name: '明豐珍兔仔寮牛舌餅', location: '鹿港', category: '傳統糕點', googleMaps: 'https://www.google.com/maps/search/?api=1&query=明豐珍兔仔寮牛舌餅' }
+        ];
+
+        // --- Navigation Logic ---
+        function showSection(sectionId) {
+            document.querySelectorAll('section[id$="-section"]').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId + '-section').classList.remove('hidden');
+
+            // Update active state for nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                link.classList.remove('border-b-2', 'border-violet-500', 'text-violet-600', 'font-semibold');
+                link.classList.add('text-gray-600');
+            });
+            const activeLink = document.querySelector(`.nav-link[data-section="${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+                activeLink.classList.add('border-b-2', 'border-violet-500', 'text-violet-600', 'font-semibold');
+                activeLink.classList.remove('text-gray-600');
+            }
+        }
+
+        // --- Daily Itinerary Route Switching Logic ---
+        function showRoute(routeId) {
+            document.querySelectorAll('.timeline-day').forEach(routeContent => {
+                routeContent.classList.add('hidden');
+            });
+            document.getElementById(routeId + '-content').classList.remove('hidden');
+
+            // Update active state for route buttons
+            document.querySelectorAll('.route-btn').forEach(button => {
+                button.classList.remove('active', 'bg-violet-600', 'text-white');
+                button.classList.add('bg-gray-200', 'text-gray-800');
+            });
+            const activeRouteButton = document.querySelector(`.route-btn[data-route="${routeId}"]`);
+            if (activeRouteButton) {
+                activeRouteButton.classList.add('active', 'bg-violet-600', 'text-white');
+                activeRouteButton.classList.remove('bg-gray-200', 'text-gray-800');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('nav a.nav-link').forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const targetSection = event.target.getAttribute('data-section');
+                    showSection(targetSection);
+                });
+            });
+            // Show default section on load
+            showSection('overview');
+
+            // Initialize Daily Itinerary Route selection
+            document.querySelectorAll('.route-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const targetRoute = event.target.getAttribute('data-route');
+                    showRoute(targetRoute);
+                });
+            });
+            // Show default route on load
+            showRoute('route1');
+
+
+            // Initialize Food Map
+            renderRestaurants('all');
+            document.querySelectorAll('.filter-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    const filter = event.target.dataset.filter;
+                    renderRestaurants(filter);
+                    // Update button active state
+                    document.querySelectorAll('.filter-btn').forEach(btn => {
+                        btn.classList.remove('bg-violet-500', 'text-white');
+                        btn.classList.add('bg-gray-200', 'text-gray-800');
+                    });
+                    event.target.classList.remove('bg-gray-200', 'text-gray-800');
+                    event.target.classList.add('bg-violet-500', 'text-white');
+                });
+            });
+
+            // Initialize Chart.js
+            initTransportChart();
+        });
+
+        // --- Food Map Logic ---
+        function renderRestaurants(filter) {
+            const restaurantListDiv = document.getElementById('restaurant-list');
+            restaurantListDiv.innerHTML = ''; // Clear previous listings
+
+            const filteredRestaurants = filter === 'all' ? restaurants : restaurants.filter(r => r.category === filter);
+
+            if (filteredRestaurants.length === 0) {
+                restaurantListDiv.innerHTML = '<p class="col-span-full text-center text-gray-600">無符合條件的餐廳。</p>';
+                return;
+            }
+
+            filteredRestaurants.forEach(restaurant => {
+                const restaurantCard = `
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md border border-gray-100 flex flex-col">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">${restaurant.name}</h3>
+                        <p class="text-gray-700 mb-1"><strong>地點：</strong> ${restaurant.location}</p>
+                        <p class="text-gray-700 mb-3"><strong>分類：</strong> ${restaurant.category}</p>
+                        <a href="${restaurant.googleMaps}" target="_blank" class="mt-auto inline-flex items-center text-violet-600 hover:text-violet-800 transition-colors duration-200 font-medium">
+                            在地圖上查看
+                            <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                        </a>
+                    </div>
+                `;
+                restaurantListDiv.innerHTML += restaurantCard;
+            });
+        }
+
+        // --- Chart.js Logic for Transportation Comparison ---
+        function initTransportChart() {
+            const ctx = document.getElementById('transportChart').getContext('2d');
+            const chartTooltip = document.getElementById('chartTooltip');
+
+            // Data for the 3 routes' total estimated travel time
+            const transportData = {
+                labels: ['路線一：鹿港古鎮風華', '路線二：八卦山與花卉綠意', '路線三：彰化市區古蹟與鄉村悠遊'],
+                datasets: [
+                    {
+                        label: '預估總交通時間 (小時)',
+                        data: [1.4, 2.5, 2.4], // (清水-鹿港: 0.7) + (鹿港-清水: 0.7) = 1.4; (清水-八卦山: 0.8) + (彰化市區-田尾: 0.7) + (田尾-清水: 1) = 2.5; (清水-彰化市區: 0.7) + (彰化市區-溪州: 0.7) + (溪州-清水: 1) = 2.4
+                        backgroundColor: 'rgba(139, 92, 246, 0.6)', // violet-500
+                        borderColor: 'rgba(139, 92, 246, 1)',
+                        borderWidth: 1,
+                    }
+                ]
+            };
+
+            const transportChart = new Chart(ctx, {
+                type: 'bar',
+                data: transportData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y', // Make bars horizontal for readability
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: '三條建議路線預估總交通時間比較 (遊覽車)',
+                            font: { size: 18, weight: 'bold' },
+                            color: '#4c1d95' // violet-800
+                        },
+                        legend: {
+                            display: false // No need for legend as there's only one dataset
+                        },
+                        tooltip: {
+                            enabled: false, // Disable default tooltip
+                            position: 'nearest',
+                            external: function(context) {
+                                let tooltipModel = context.tooltip;
+                                if (tooltipModel.opacity === 0) {
+                                    chartTooltip.style.display = 'none';
+                                    return;
+                                }
+
+                                const dataPoints = tooltipModel.dataPoints;
+                                if (dataPoints && dataPoints.length > 0) {
+                                    let innerHtml = `
+                                        <div class="font-bold text-base mb-1">${dataPoints[0].label}</div>
+                                        <div>總交通時間：<span class="font-semibold">${dataPoints[0].formattedValue} 小時</span></div>
+                                    `;
+                                    chartTooltip.innerHTML = innerHtml;
+
+                                    const position = context.chart.canvas.getBoundingClientRect();
+                                    chartTooltip.style.display = 'block';
+                                    chartTooltip.style.left = (position.left + window.scrollX + tooltipModel.caretX) + 'px';
+                                    chartTooltip.style.top = (position.top + window.scrollY + tooltipModel.caretY - chartTooltip.offsetHeight - 10) + 'px'; // Adjusted to be above
+                                    chartTooltip.style.opacity = 1;
+                                } else {
+                                    chartTooltip.style.display = 'none';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: '時間 (小時)',
+                                font: { size: 14, weight: 'bold' },
+                                color: '#6d28d9' // violet-700
+                            },
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: '建議路線',
+                                font: { size: 14, weight: 'bold' },
+                                color: '#6d28d9'
+                            },
+                            ticks: {
+                                font: { size: 12 }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
